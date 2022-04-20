@@ -1,12 +1,10 @@
 import React from "react";
-const Dinner = ({businesses}) => {
+const Dinner = ({business}) => {
   return (
     <div>
-        <ul>
-            <li>
-            {businesses.name}
-          </li>
-        </ul>
+        
+           <h1>{business.name}</h1>
+          
     </div>
   );
 };

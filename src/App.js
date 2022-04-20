@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import "./Movie";
 import Dinner from "./Dinner";
@@ -15,9 +15,16 @@ function App() {
     latitude: null,
     longitude: null
   }
-  
+  const initialRestaurantState = {
+    businesses: [],
+    region: [],
+    total: 0
+  }
+    /* {food.map((null) => {
+          return <Dinner key={null} />;
+        })} */
   const [popular, setPopular] = useState([]);
-  const [restaurants, setRestaurants] = useState([]);
+  const [restaurants, setRestaurants] = useState(initialRestaurantState);
 
     // const [food, setFood] = useState([]);
     
@@ -41,33 +48,26 @@ function App() {
   //   console.log(dinner);
   //   setFood(dinner.location);
   // };
-  const callYelpApiWithCredentials = useCallback(async (searchParam, location) => {
-    const requestUrl = 'https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search'
-   try {
-     const response = await fetch(`${requestUrl}?term=${searchParam}&location=NYC`, {
-       headers: {
-         'Authorization': `Bearer ${process.env.REACT_APP_API_KEY}`
-       }
-   })
-   const restaurantsResponse = response.json()
-   console.log(restaurantsResponse)
-   setRestaurants(restaurantsResponse)
-  
-   } catch (error) {
-     console.error(error)
-   }
-})
 
-function formatLocationToUrlEncode(locationObject) {
-  const objectKeys = Object.keys(locationObject)
-  objectKeys.map((key, index) => {
-     if (locationObject[key]) return `${key}=${locationObject[key]}`
-  })
-
-}
 
     useEffect(() => {
-    fetchPopular();
+      const callYelpApiWithCredentials = async (searchParam, location) => {
+        const requestUrl = 'http://localhost:4000/https://api.yelp.com/v3/businesses/search'
+       try {
+         const response = await fetch(`${requestUrl}?term=${searchParam}&location=NYC`, {
+           headers: {
+             'Authorization': `Bearer ${process.env.REACT_APP_API_KEY}`
+           }
+       })
+       const restaurantsResponse = await response.json()
+       console.log(restaurantsResponse)
+       setRestaurants(restaurantsResponse)
+      
+       } catch (error) {
+         console.error(error)
+       }
+    }
+      fetchPopular();
     callYelpApiWithCredentials(searchParam, location);
     // fetchDinner();
   },[]);
@@ -79,17 +79,14 @@ return (
         {popular.map((movie) => {
           return <Movie key={movie.id} movie={movie} />;
         })}
-        {/* {food.map((null) => {
-          return <Dinner key={null} />;
-        })} */}
       </div>
-      {/* <div>
+      <div>
            
-      {restaurants.buisnesses.map(businesses => {
-          return <Dinner key={businesses.name}/>
+      {restaurants.businesses.map(business => {
+          return <Dinner key={business.name} business={business}/>
         })}
 
-      </div> */}
+      </div>
     </div>
   );
 };
