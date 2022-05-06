@@ -18,6 +18,10 @@ function App() {
   
   const [restaurants, setRestaurants] = useState([]);
   const [popular, setPopular] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState(null);
     
     const fetchPopular = async () => {
       console.log("hello");
@@ -39,10 +43,14 @@ function App() {
        })
        const restaurantsResponse = await response.json()
        console.log(restaurantsResponse)
+       setIsLoading(false) 
+       setIsSuccess(true)
        setRestaurants(restaurantsResponse.businesses)
       
        } catch (error) {
-         console.log('hi');
+         setIsLoading(false)
+         setIsError(true)
+         setError(error)
          console.error(error)
        }
     }
@@ -60,38 +68,36 @@ function App() {
   }
 
 
-        // console.log(r)
-  //       return r
-  //   });
-  // }
-
-  // shuffleArray(popular);
-  // console.log(JSON.stringify(popular));
-
-
-//  function handleclick = (movie) => {
-//     this.props.(movie.id);
-// }
 return (
   <div className="App">
     <h1>Click button to get started</h1>
-    <button onClick={handleShuffleArray}></button>
+    <button onClick={handleShuffleArray}>Randomize</button>
     <p>Once you click the button it gives you options for your dinner movie night</p>
-   {/* <Button onClick={shuffleArray}></Button> */}
-    <div className="popular-movies">
+    {isSuccess && !isLoading && !isError && (<div className="popular-movies">
       {popular.map((movie, index) => { 
         console.log('movie')
         console.log('restaurant', restaurants[index])
-       console.log('hmm', restaurants[index].name)
+       console.log('hmm', restaurants[index]?.name)
         return (
          <div> 
            <Movie key={movie.id} movie={movie} /> 
-           <h2> Random Restaurant : {restaurants[index].name}</h2>
+           <h2> Random Restaurant : {restaurants[index]?.name}</h2>
            <br></br>
         </div>
         );
       })}
-    </div>
+    </div>)}
+    {!isSuccess && isLoading && !isError && (
+      <div>
+        <h1>...LOADING</h1>
+      </div>
+    ) }
+     {!isSuccess && !isLoading && isError && (
+      <div>
+        <h1>ERROR</h1>
+        <p>{error}</p>
+      </div>
+    ) }
     <div>
 
     </div>
