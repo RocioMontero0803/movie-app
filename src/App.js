@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import "./Movie";
-import Dinner from "./Dinner";
 import Movie from "./Movie";
-import Button from "./Button";
+import Search from "./Search";
 function App() {
   console.log("hmm");
   const url =
@@ -22,6 +21,8 @@ function App() {
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [showState, setIsShowState] = useState(true);
+  const [prevState, setPrevState] = useState(false);
     
     const fetchPopular = async () => {
       console.log("hello");
@@ -51,6 +52,7 @@ function App() {
          setIsLoading(false)
          setIsError(true)
          setError(error)
+
          console.error(error)
        }
     }
@@ -65,13 +67,22 @@ function App() {
     
     const randomMovie = [...popular].sort(() => Math.random() - Math.random())
     setPopular(randomMovie)
-  }
+  };
+
+  function handleShuffleClick(){
+    setIsShowState(false); 
+    setPrevState(true); 
+    handleShuffleArray();
+  };
 
 
 return (
   <div className="App">
     <h1>Click button to get started</h1>
-    <button onClick={handleShuffleArray}>Randomize</button>
+  { showState && <button onClick={handleShuffleClick}>Wow </button>}
+  <Search />
+    <br></br>
+{ prevState && <button onClick={handleShuffleArray} >Try Again? <br></br>Randomize</button>}
     <p>Once you click the button it gives you options for your dinner movie night</p>
     {isSuccess && !isLoading && !isError && (<div className="popular-movies">
       {popular.map((movie, index) => { 
@@ -79,14 +90,14 @@ return (
         console.log('restaurant', restaurants[index])
        console.log('hmm', restaurants[index]?.name)
         return (
-         <div> 
+         <div className="grid"> 
            <Movie key={movie.id} movie={movie} /> 
            <h2> Random Restaurant : {restaurants[index]?.name}</h2>
            <br></br>
         </div>
         );
       })}
-    </div>)}
+    </div>)} 
     {!isSuccess && isLoading && !isError && (
       <div>
         <h1>...LOADING</h1>
@@ -101,6 +112,7 @@ return (
     <div>
 
     </div>
+
   </div>
 );
 };
