@@ -4,12 +4,9 @@ import "./Movie";
 import Movie from "./Movie";
 import Search from "./Search";
 function App() {
-  console.log("hmm");
   const url =
  "https://api.themoviedb.org/3/movie/popular?api_key=19dedc791dc255982eaf84be8a93012a&language=en-US&page=1";
 
- const searchParam = 'rice'
-  
  const location = {
     latitude: null,
     longitude: null
@@ -23,27 +20,25 @@ function App() {
   const [error, setError] = useState(null);
   const [showState, setIsShowState] = useState(true);
   const [prevState, setPrevState] = useState(false);
+  const [searchParam, setSearchParam] = useState('');
     
     const fetchPopular = async () => {
-      console.log("hello");
       const data = await fetch(url);
       const movies = await data.json();
-      console.log(movies);
       setPopular(movies.results);
     };
 
     useEffect(() => {
-      console.log("bye")
+      console.log('useEffect called');
       const callYelpApiWithCredentials = async (searchParam, location) => {
         const requestUrl = 'http://localhost:4000/https://api.yelp.com/v3/businesses/search'
        try {
-         const response = await fetch(`${requestUrl}?term=${searchParam}&location=NYC`, {
+         const response = await fetch(`${requestUrl}?term=${searchParam}&location=TX`, {
            headers: {
              'Authorization': `Bearer ${process.env.REACT_APP_API_KEY}`
            }
        })
        const restaurantsResponse = await response.json()
-       console.log(restaurantsResponse)
        setIsLoading(false) 
        setIsSuccess(true)
        setRestaurants(restaurantsResponse.businesses)
@@ -58,7 +53,7 @@ function App() {
     }
       fetchPopular(popular);
       callYelpApiWithCredentials(searchParam, location);
-  }, []);
+  }, [searchParam]);
 
 
   function handleShuffleArray() {
@@ -75,20 +70,21 @@ function App() {
     handleShuffleArray();
   };
 
+  function handleSearchSubmit(event, searchTerm){
+    setSearchParam(searchTerm);
+  };
+
 
 return (
   <div className="App">
     <h1>Click button to get started</h1>
   { showState && <button onClick={handleShuffleClick}>Wow </button>}
-  <Search />
+  <Search handleSubmit={handleSearchSubmit} searchParam={searchParam} />
     <br></br>
 { prevState && <button onClick={handleShuffleArray} >Try Again? <br></br>Randomize</button>}
     <p>Once you click the button it gives you options for your dinner movie night</p>
     {isSuccess && !isLoading && !isError && (<div className="popular-movies">
       {popular.map((movie, index) => { 
-        console.log('movie')
-        console.log('restaurant', restaurants[index])
-       console.log('hmm', restaurants[index]?.name)
         return (
          <div className="grid"> 
            <Movie key={movie.id} movie={movie} /> 

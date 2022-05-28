@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
-const Search = (props) => {
+const Search = ({handleSubmit, searchParam}) => {
 
 const [searchTerm, setSearchTerm] = useState("");
 
@@ -13,6 +13,7 @@ console.log({event});
   return (
     <div>
     <input onChange={handleInputChange} value={searchTerm} className = "searchBar" />
+    <button onClick={(event)=>handleSubmit(event, searchTerm)}>Search</button>
     </div>
   );
 };
