@@ -13,7 +13,7 @@ console.log({event});
   return (
     <div>
     <input onChange={handleInputChange} value={searchTerm} className = "searchBar" />
-    <button onClick={(event)=>handleSubmit(event, searchTerm)}>Search</button>
+    <button onClick={(event)=>handleSubmit(event, searchTerm, null)}>Search</button>
     </div>
   );
 };

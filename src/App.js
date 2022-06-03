@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import "./Movie";
 import Movie from "./Movie";
+import Dropdown from "./Dropdown";
 import Search from "./Search";
 function App() {
   const url =
@@ -21,6 +22,7 @@ function App() {
   const [showState, setIsShowState] = useState(true);
   const [prevState, setPrevState] = useState(false);
   const [searchParam, setSearchParam] = useState('');
+  const [searchLocation, setSearchLocation] = useState('TX');
     
     const fetchPopular = async () => {
       const data = await fetch(url);
@@ -30,10 +32,10 @@ function App() {
 
     useEffect(() => {
       console.log('useEffect called');
-      const callYelpApiWithCredentials = async (searchParam, location) => {
+      const callYelpApiWithCredentials = async (searchParam, location, searchLocation) => {
         const requestUrl = 'http://localhost:4000/https://api.yelp.com/v3/businesses/search'
        try {
-         const response = await fetch(`${requestUrl}?term=${searchParam}&location=TX`, {
+         const response = await fetch(`${requestUrl}?term=${searchParam}&location=${searchLocation}`, {
            headers: {
              'Authorization': `Bearer ${process.env.REACT_APP_API_KEY}`
            }
@@ -52,8 +54,8 @@ function App() {
        }
     }
       fetchPopular(popular);
-      callYelpApiWithCredentials(searchParam, location);
-  }, [searchParam]);
+      callYelpApiWithCredentials(searchParam, location, searchLocation);
+  }, [searchParam, searchLocation]);
 
 
   function handleShuffleArray() {
@@ -70,16 +72,20 @@ function App() {
     handleShuffleArray();
   };
 
-  function handleSearchSubmit(event, searchTerm){
-    setSearchParam(searchTerm);
+  function handleSearchSubmit(event, searchTerm, searchState){
+    console.log(searchTerm);
+    console.log(searchState);
+    if(searchTerm) setSearchParam(searchTerm);
+    if(searchState) setSearchLocation(searchState);
   };
 
 
 return (
   <div className="App">
     <h1>Click button to get started</h1>
-  { showState && <button onClick={handleShuffleClick}>Wow </button>}
+  { showState && <button onClick={handleShuffleClick}>Randomize</button>}
   <Search handleSubmit={handleSearchSubmit} searchParam={searchParam} />
+  <Dropdown handleSubmit={handleSearchSubmit} searchLocation={searchLocation}/>
     <br></br>
 { prevState && <button onClick={handleShuffleArray} >Try Again? <br></br>Randomize</button>}
     <p>Once you click the button it gives you options for your dinner movie night</p>
